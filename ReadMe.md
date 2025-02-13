@@ -5,6 +5,7 @@ Features:
 
 **Installation:** 
 Download/clone the repository and run the following commands in the root directory of the project:
+
 pip install -r requirements.txt
 
 **Usage:**
