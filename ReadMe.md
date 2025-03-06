@@ -8,7 +8,7 @@ Download/clone the repository and run the following commands in the root directo
 pip install -r requirements.txt
 
 **Usage:**
-usage: 
+
 `python main.py [--image IMAGE] [--outname OUTNAME] link`
 
 `python main.py "https://example.com" -i "logo.png" -o "logo_qr.png"`
