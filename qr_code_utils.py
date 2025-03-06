@@ -1,4 +1,6 @@
 import qrcode
+from pyzbar.pyzbar import decode
+
 from PIL import Image, ImageDraw, ImageFilter
 
 def generate_qr_code(text, image_path=None, output_path="qrcode.png"):
@@ -50,6 +52,33 @@ def generate_qr_code(text, image_path=None, output_path="qrcode.png"):
     # Step 4: Save the generated QR code
     qr_code_image.save(output_path)
     print(f"QR Code generated and saved to {output_path}")
+
+def read_qrcode_from_file(file_path):
+    """
+    Reads and decodes QR codes in the provided image file.
+
+    Args:
+        file_path (str): Path to the image file to scan for QR codes.
+
+    Returns:
+        list: A list of decoded text strings from the QR codes.
+    """
+    try:
+        # Open the image using PIL
+        image = Image.open(file_path)
+
+        # Decode QR codes in the image
+        decoded_objects = decode(image)
+
+        # Extract text from each QR code
+        qr_texts = [obj.data.decode('utf-8') for obj in decoded_objects]
+
+        if qr_texts:
+            return qr_texts
+        else:
+            return ["No QR codes were found in the image."]
+    except Exception as e:
+        return [f"Error reading QR code: {e}"]
 
 
 # Example usage

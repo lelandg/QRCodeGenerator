@@ -1,5 +1,5 @@
 __author__ = "Leland Green"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __date_created__ = "2025-02-13"
 __last_updated__ = "2025-02-13"
 __email__ = "lelandgreenproductions@gmail.com"
@@ -22,7 +22,7 @@ License:
 
 """
 import argparse
-from generate_qr_code import generate_qr_code  # Assuming generate_qr_code is defined elsewhere
+from qr_code_utils import *
 
 
 def main():
@@ -36,6 +36,9 @@ def main():
                         help="Optional image path to embed in the center of the generated QR code.")
     parser.add_argument("--outname", "-o", type=str, default="qrcode.png",
                         help="Optional output file name for the generated QR code. (Default: qrcode.png)")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument("-r", "--read", default=False, action="store_true",
+                        help="Read and decode QR codes from an image file and display the text inside.")
 
     # Check if no arguments were passed
     import sys
@@ -46,8 +49,17 @@ def main():
     # Parse the command line arguments
     args = parser.parse_args()
 
-    # Generate the QR code with the parsed arguments
-    generate_qr_code(text=args.link, image_path=args.image, output_path=args.outname)
+    if args.read:
+        # Read and decode QR codes from an image file
+        qr_texts = read_qrcode_from_file(file_path=args.link)
+
+        # Display the decoded text
+        for i, text in enumerate(qr_texts, start=1):
+            print(f"QR Code {i}: {text}")
+        return
+    else:
+        # Generate the QR code with the parsed arguments
+        generate_qr_code(text=args.link, image_path=args.image, output_path=args.outname)
 
 
 if __name__ == "__main__":
