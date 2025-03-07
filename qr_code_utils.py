@@ -1,7 +1,9 @@
+import subprocess
+
 import qrcode
+from PIL import Image, ImageFilter
 from pyzbar.pyzbar import decode
 
-from PIL import Image, ImageDraw, ImageFilter
 
 def generate_qr_code(text, image_path=None, output_path="qrcode.png", filter_image=True):
     """
@@ -81,6 +83,45 @@ def read_qrcode_from_file(file_path):
             return ["No QR codes were found in the image."]
     except Exception as e:
         return [f"Error reading QR code: {e}"]
+
+def get_wifi_details():
+    """Retrieve Wi-Fi details from the system (Windows example)."""
+    try:
+        # Get all Wi-Fi profiles
+        result = subprocess.check_output("netsh wlan show profiles", shell=True, text=True)
+        profiles = [line.split(":")[1].strip() for line in result.split("\n") if "All User Profile" in line]
+
+        if profiles:
+            # Use the first profile as an example
+            current_profile = profiles[0]
+
+            # Get Wi-Fi details (password included if available)
+            details = subprocess.check_output(f'netsh wlan show profile "{current_profile}" key=clear', shell=True,
+                                              text=True)
+
+            ssid = current_profile
+            encryption = "WPA/WPA2"
+            password_line = [line for line in details.split("\n") if "Key Content" in line]
+            password = password_line[0].split(":")[1].strip() if password_line else ""
+
+            return ssid, encryption, password
+        else:
+            print("No Wi-Fi profiles found.")
+            return None, None, None
+    except Exception as e:
+        print(f"Error retrieving Wi-Fi details: {e}")
+        return None, None, None
+
+
+def create_wifi_qr(ssid, encryption, password, output_filename="wifi_qrcode.png"):
+    """Generate a Wi-Fi QR code."""
+    wifi_format = f"WIFI:S:{ssid};T:{encryption};P:{password};;"
+    qr = qrcode.QRCode()
+    qr.add_data(wifi_format)
+    qr.make(fit=True)
+    img = qr.make_image(fill="black", back_color="white")
+    img.save(output_filename)
+    print(f"QR code saved as {output_filename}")
 
 
 # Example usage
