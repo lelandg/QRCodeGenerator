@@ -3,7 +3,7 @@ from pyzbar.pyzbar import decode
 
 from PIL import Image, ImageDraw, ImageFilter
 
-def generate_qr_code(text, image_path=None, output_path="qrcode.png"):
+def generate_qr_code(text, image_path=None, output_path="qrcode.png", filter_image=True):
     """
     Generate a QR code from text input and optionally embed an image in the center.
     
@@ -31,8 +31,10 @@ def generate_qr_code(text, image_path=None, output_path="qrcode.png"):
 
             # Convert to black-and-white outline for aesthetics
             img = img.convert("L")  # Convert to grayscale
-            img = img.filter(ImageFilter.FIND_EDGES)  # Apply edge detection
-            img = img.point(lambda x: 0 if x < 128 else 255, '1')  # Thresholding
+            if filter_image:
+                # img = img.filter(ImageFilter.SMOOTH_MORE)  # Noise reduction
+                img = img.filter(ImageFilter.FIND_EDGES)  # Apply edge detection
+                img = img.point(lambda x: 255 if x < 128 else 0, '1')  # Thresholding
 
             # Resize the image to fit in the center of the QR code
             qr_width, qr_height = qr_code_image.size
@@ -85,5 +87,8 @@ def read_qrcode_from_file(file_path):
 if __name__ == "__main__":
     # Generate a QR code with embedded text and optional image
     text_input = "https://lelandgreen.com"
-    image_input_path = "Self-Portrait.jpg"  # Provide a valid image path, or None to skip
-    generate_qr_code(text_input, image_path=image_input_path, output_path="lelandgreen.com_qrcode.png")
+    image_input_path = "Self-Portrait.jpg - 99x99-B&W.jpg"  # Provide a valid image path, or None to skip
+    generate_qr_code(text_input,
+                     image_path=image_input_path,
+                     output_path="lelandgreen.com_qrcode.png",
+                     filter_image=False)
