@@ -6,6 +6,9 @@ Features:
 * Detect Wi-Fi network credentials and creat QR code. (Does not store password, other than in image. 
  Does nothing else with it... check the `code` in `qr_code_utils.py` to verify, if you prefer.)
 
+**QR Code Generator Example for QR Code Generator!**
+![QR Code Example](./qrcode_QRCodeGenerator.png) 
+
 **Installation:** 
 
 Download/clone the repository and run the following commands in the root directory of the project:
