@@ -1,0 +1,34 @@
+QR Code Generator v0.1.4. Author: Leland Green
+
+usage: main.py [-h] [--text TEXT] [--image IMAGE] [--filter]
+               [--outname OUTNAME] [--version] [-r] [--wifi]
+
+Generate or read a QR code. Embed an optional embedded image, or create a Wi-
+Fi access QR code.
+
+options:
+  -h, --help            show this help message and exit
+  --text, -t TEXT       The text to encode in the QR code, or image file name
+                        to read. This is required when creating a QR code.
+                        (Except when using '-w'.)
+  --image, -i IMAGE     Optional image path to embed in the center of the
+                        generated QR code.
+  --filter, -f          Disable image filtering (edge detection and
+                        thresholding).
+  --outname, -o OUTNAME
+                        Optional output file name for the generated QR code.
+                        (Default: qrcode.png)
+  --version             show program's version number and exit
+  -r, --read            Follow this with the file name to read. E.g. '-r
+                        my_qrcode.png' Read and decode QR codes from an image
+                        file and display the text inside. This overrides the
+                        QR code generation, so nothing else is required.
+  --wifi, -w            Generate a QR code for a Wi-Fi network. This will use
+                        the current network details. This provides all info
+                        needed for the QR code, so no other arguments are
+                        required. The output file name will be
+                        'wifi_qrcode.png', unless you specify it. (Yes, it
+                        detects your Wi-Fi password. No, it doesn't store it,
+                        other than in the image.)
+
+Error: No text provided for the QR code. Must use --text or -t argument.Unless you're reading a QR code with -r or creating one for Wi-Fi with -w.
