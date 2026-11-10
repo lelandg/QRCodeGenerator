@@ -21,7 +21,7 @@ Security problems are different. Please report those privately, as described in 
 1. Fork the repository and create a branch from the default branch.
 2. Keep each pull request to one fix or one feature.
 3. Match the existing code style, and run any tests the README mentions before you push.
-   There is no test suite yet: generate a QR code, then read it back with `python main.py -r <file>`.
+   There is no test suite yet: generate a QR code, then read it back with `python main.py -r -t <file>`.
 4. Say what changed and why in the description.
 
 For anything bigger than a small fix, open an issue or ask on Discord first. Nobody wants you to spend a weekend on something that needed a five-minute conversation.
