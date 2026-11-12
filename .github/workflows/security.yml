@@ -434,8 +434,9 @@ jobs:
                       if "@" not in value:
                           continue
                       name, ref = value.rsplit("@", 1)
-                      if name.startswith(("./", "docker://")) or not re.fullmatch(r"[0-9a-f]{40}", ref):
+                      if name.startswith(("./", "docker://")) or not re.fullmatch(r"[0-9a-fA-F]{40}", ref):
                           continue  # local, container, or not a SHA (zizmor gates unpinned refs)
+                      ref = ref.lower()  # git ls-remote prints lowercase object IDs
                       parts = name.split("/")
                       if len(parts) < 2:
                           continue
@@ -455,7 +456,20 @@ jobs:
                   except (subprocess.SubprocessError, OSError) as exc:
                       print(f"::error title=action pins::scanner error: cannot list the tags of {esc(owner)}/{esc(repo)} ({esc(exc)}); not a findings result")
                       sys.exit(2)
-                  tags[key] = {l.split()[0] for l in out.splitlines() if l.strip()}
+                  # An annotated tag prints two lines: the tag object, then the
+                  # commit it points at (`<tag>^{}`). Only commits can be pinned,
+                  # so accept the peeled commit; a lightweight tag has one line.
+                  direct, peeled = {}, {}
+                  for l in out.splitlines():
+                      fields = l.split()
+                      if len(fields) < 2:
+                          continue
+                      oid, name_ = fields[0], fields[1]
+                      if name_.endswith("^{}"):
+                          peeled[name_[:-3]] = oid
+                      else:
+                          direct[name_] = oid
+                  tags[key] = {peeled.get(n_, oid) for n_, oid in direct.items()}
               if sha not in tags[key]:
                   for p in where:
                       bad += 1
